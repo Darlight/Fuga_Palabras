@@ -9,7 +9,6 @@ Proposito: Funciones vasicas con lenguaje ARM
 .data
 .align 2
 
-bienvenida:	.asciz "BIENVENIDOS A FUGA DE PALABRAS\n"
 turno_jugador1:	.asciz "***TURNO JUGADOR 1***\n"
 turno_jugador2:	.asciz "***TURNO JUGADOR 2***\n"
 formato_palabra:.asciz "Palabra: %s\n"
@@ -18,9 +17,32 @@ formato_mal1:	.asciz "ERROR. Puntos Jugador 1: %d\n"
 formato_mal2:	.asciz "ERROR. Puntos Jugador 2: %d\n"
 formato_bien1:	.asciz "BIEN. Puntos Jugador 1: %d\n"
 formato_bien2:	.asciz "BIEN. Puntos Jugador 2: %d\n"
+
 ganador1:	.asciz "El Jugador 1 ha ganado"
 ganador2:	.asciz "El Jugador 2 ha ganado"
 empates:	.asciz "HA SIDO UN EMPATE"
+
+interfaz_gra1: 
+.asciz 
+"              ,,,,,,,,,,,,:,,,,,,,,,,,:,,,,,,,:,,,,,,,,,:,,,:,,,,,,,,,:,,,,,,,,,,,,,,,,,:,,,,,,,:,,,,,,,:,,,,,,,,,,,,,,,,,,,,,,,:,,,:,,,:,,,,,,,,.,:  
+                                                                                                                                                   .  
+            .,                                                                                                                                    :   
+           .:                                                                                                                                    :    
+          .:    .,;;;;                                    5@;              .:;;,            v@7          @8                                     ;     
+          :     @@@@@@r                                   b@3              @@@@@@Z          E@6          @@                                    :.     
+         :      @@;     ms   ms   F##CZ7 ;m8@a:       rD8rk@v  ,Xb8i       @@.  @@L 7m@@F.  3@F  Sb@b7   @@rm@t   S7:@m ;X@@X:   v#8D.        :.      
+        :       8@a;rr  @@  .@@  @@;;@@s kmr;@@;     X@@S6@@r 7@#;;@@      @@:  @@r bE;;@@. s@C ;@i;U@H  @@@U#@@  @@@@b Zkr;@@; @@S:si       ,.       
+       :        8@@@@@. @@   @@  @@ ,@@   ;7r8@t     @@.  Z@r @@aLL@@Y     @@@@@@L   ;7r@@r s@S  ,rr3@@  @@   @@7 @@r    ;7r8@3 v@@s        .,        
+      ,.        @@r     @@  ,@@  @HFm7   @@r #@s     @@   b@r @@r.. ,.     @@r     ;@@;.@@r s@C @@F,r@@  @@   @@r @@;  .@@r.6@l   .b@H     .,         
+     ,.         @@S     @@@8@@@  @@X6Zr  @@7L@@S     Y@@#@@@5 ;@@slZk      @@r     ;@@7L@@T X@P @@kr#@@  @@@b@@@  @@7  .@@iY@@F bE7#@8    .:          
+    .,          ;C;      rXF ;L T@s  b@D  L63,vr      .Sm7 L;   Y6kEv.     rt;       5ks.L; .5r  rXE;;L  Yr.Cm7   ;S:    sPS.vr :X6a;     :           
+   .,                           l@@Zk@@7                                                                                                 :            
+  .:                              :r;:                                                                                                  :             
+  :                                                                                                                                    :.             
+ ,,..,.,.,.,.,.,.,.,.,.,.,.,.,.,.......,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,,.              
+                                                                                                                                                      
+
+                                                      
 
 pal1:	
 	.asciz "p","a","c","t","o","_"
