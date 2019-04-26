@@ -12,15 +12,20 @@ Proposito: Funciones vasicas con lenguaje ARM
 turno_jugador1:	.asciz "***TURNO JUGADOR 1***\n"
 turno_jugador2:	.asciz "***TURNO JUGADOR 2***\n"
 formato_palabra:.asciz "Palabra: %s\n"
-formato_vocal:	.asciz "Ingrese la vocal: \n"
+ingresar_vocal:	.asciz "Ingrese la vocal: \n"
+formato_vocal:	.asciz " %s"
+
 formato_mal1:	.asciz "ERROR. Puntos Jugador 1: %d\n"
 formato_mal2:	.asciz "ERROR. Puntos Jugador 2: %d\n"
 formato_bien1:	.asciz "BIEN. Puntos Jugador 1: %d\n"
 formato_bien2:	.asciz "BIEN. Puntos Jugador 2: %d\n"
+mal: 			.asciz "Ingreso incorrecto\n"
 
-ganador1:	.asciz "El Jugador 1 ha ganado"
-ganador2:	.asciz "El Jugador 2 ha ganado"
-empates:	.asciz "HA SIDO UN EMPATE"
+ganador1:		.asciz "El Jugador 1 ha ganado"
+ganador2:		.asciz "El Jugador 2 ha ganado"
+empates:		.asciz "HA SIDO UN EMPATE"
+
+vocal:			.asciz " "
 
 interfaz_gra1: 
 .asciz 
@@ -39,7 +44,7 @@ interfaz_gra1:
    .,                           l@@Zk@@7                                                                                                 :            
   .:                              :r;:                                                                                                  :             
   :                                                                                                                                    :.             
- ,,..,.,.,.,.,.,.,.,.,.,.,.,.,.,.......,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,,.              
+ ,,..,.,.,.,.,.,.,.,.,.,.,.,.,.,.......,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,,.     "         
                                                                                                                                                       
 
                                                       
@@ -85,58 +90,99 @@ pal19:
 pal20:
 	.asciz "q","u","e","s","o","_"
 
-.text
-.align 2
-.global main
-.type main,%function
+	.text
+	.align	2
+	.global		main
+	.type		main,%function
 
+
+	/*
+	R5	Contador de palabras por juego
+	R6  Contador de puntos del jugador 1
+	R7	Contador de puntos del jugador 2
+	*/
 main:
+	stmfd	sp!, {lr}
+	contador_palabras	.req	R5
+	contador1			.req	R6
+	contador2			.req	R7
+
+	MOV contador_palabras, #10
+	MOV contador1, #0
+	MOV contador2, #0
 
 turno1:
 	SUB contador_palabras, contador_palabras, #1
-	LDR R0, =formato_vocal
+	LDR R0, =ingresar_vocal
 	BL puts
 
 	BL getchar
-	LDR r1,=formato_vocal
-	STR r0,[r1]
+	LDR r0, =formato_vocal
+	LDR r1, =vocal
+	LDR r1, [r1]
+	bl scanf
+
+	@ compara y salta si r0 es 0 (error)
+	cmp r0,#0
+	beq Num_Mal1
 
 	@Compara la letra ingresada con la letra faltante
-	CMP R0, letra
+	LDR R1, =vocal
+	LDR R1, [R1]
+	CMP R1, letra
 	BEQ correcto1
 
 correcto1:
 	@Suma 5 puntos al contador de puntos del jugador 1
 	add contador1, contador1, #5
+	LDR R0, =formato_bien1
+	LDR R1, contador1
+	bl printf
 	bl turno2
 
 incorrecto1:
 	@Resta 2 puntos al contador de puntos del jugador 1
 	sub contador1, contador1, #2
+	LDR R0, =formato_mal1
+	LDR R1, contador1
+	bl printf
 	bl turno2
 
 turno2:
 	SUB contador_palabras, contador_palabras, #1
-
-	LDR R0, =formato_vocal
+	LDR R0, =ingresar_vocal
 	BL puts
 
 	BL getchar
-	LDR r1,=formato_vocal
-	STR r0,[r1]
+	LDR r0, =formato_vocal
+	LDR r1, =vocal
+	LDR r1, [r1]
+	bl scanf
+
+	@ compara y salta si r0 es 0 (error)
+	cmp r0,#0
+	beq Num_Mal2
 
 	@Compara la letra ingresada con la letra faltante
-	CMP R0, letra
+	LDR R1, =vocal
+	LDR R1, [R1]
+	CMP R1, letra
 	BEQ correcto2
 
 correcto2:
 	@Suma 5 puntos al contador de puntos del jugador 2
 	add contador2, contador2, #5
+	LDR R0, =formato_bien2
+	LDR R1, contador2
+	bl printf
 	bl comparar
 
 incorrecto2:
 	@Resta 2 puntos al contador de puntos del jugador 2
 	sub contador2, contador2, #2
+	LDR R0, =formato_mal2
+	LDR R1, contador2
+	bl printf
 	bl comparar
 
 comparar:
@@ -168,7 +214,23 @@ empate:
 	bl puts
 	bl fin
 
+Num_Mal1:
+	ldr r0,=mal
+	bl puts
+	bl getchar @para que borre la informacion del buffer de teclado
+	bl turno1
+
+Num_Mal2:
+	ldr r0,=mal
+	bl puts
+	bl getchar @para que borre la informacion del buffer de teclado
+	bl turno2
+
 fin:
+	.unreq	contador_palabras
+	.unreq	contador1
+	.unreq	contador2
+
 	mov r0, #0
 	mov r3, #0
 	ldmfd sp!, {lr}
