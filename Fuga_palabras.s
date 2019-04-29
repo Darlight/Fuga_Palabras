@@ -212,4 +212,13 @@ fin:
 	mov r3, #0
 	ldmfd sp!, {lr}
 	bx lr
+random_real:
+	push {lr}
+	bl aleatorios
+	cmp r0, #0
+	blt random_real
+	cmpge r0, #20
+	bgt random_real
+	pop {pc}
+	
 
