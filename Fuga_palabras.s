@@ -27,6 +27,7 @@ empates:		.asciz "HA SIDO UN EMPATE"
 
 vocal:			.asciz " "
 
+/*
 interfaz_gra1: 
 .asciz 
 "              ,,,,,,,,,,,,:,,,,,,,,,,,:,,,,,,,:,,,,,,,,,:,,,:,,,,,,,,,:,,,,,,,,,,,,,,,,,:,,,,,,,:,,,,,,,:,,,,,,,,,,,,,,,,,,,,,,,:,,,:,,,:,,,,,,,,.,:  
@@ -46,49 +47,28 @@ interfaz_gra1:
   :                                                                                                                                    :.             
  ,,..,.,.,.,.,.,.,.,.,.,.,.,.,.,.......,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,,.     "         
                                                                                                                                                       
-
+*/
                                                       
 
-pal1:	
-	.asciz "p","a","c","t","o","_"
-pal2:
-	.asciz "c","a","l","l","e","_"
-pal3:
-	.asciz "r","a","d","i","o","_"
-pal4:
-	.asciz "t","r","e","c","e","_"
-pal5:
-	.asciz "d","a","m","a","s","_"
-pal6:
-	.asciz "q","u","e","j","a","_"
-pal7:
-	.asciz "p","e","c","a","s","_"
-pal8:
-	.asciz "m","a","c","h","o","_"
-pal9:
-	.asciz "r","a","b","i","a","_"
-pal10:
-	.asciz "j","a","d","e","o","_"
-pal11:
-	.asciz "m","a","d","r","e","_"
-pal12:
-	.asciz "i","d","o","l","o","_"
-pal13:
-	.asciz "f","a","c","h","a","_"
-pal14:
-	.asciz "b","a","h","i","a","_"
-pal15:
-	.asciz "d","a","n","g","o","_"
-pal16:
-	.asciz "j","a","b","o","n","_"
-pal17:
-	.asciz "j","o","r","g","e","_"
-pal18:
-	.asciz "v","a","g","o","s","_"
-pal19:
-	.asciz "a","b","e","j","a","_"
-pal20:
-	.asciz "q","u","e","s","o","_"
+arreglo_palabras:	
+	.asciz	"h_la",				"ad_os",		"univ_rsidad",	"pat_",			"c_mputadora",	
+			"organizac_on",		"ten_dor",		"aliment_r",	"p_labra",		"manzan_",	
+			"Guatem_la",		"g_itarra",		"vari_ble",		"pr_gramacion",	"program_dor",	
+			"fr_ta",			"v_rdura",		"amig_",		"florer_",		"pant_lla",
+			"p_nto",			"flotant_",		"t_cla",		"rat_n",		"c_ble"
+			"puert_",			"v_ntana",		"c_sa",			"t_cho",		"m_sil",
+			"c_rrer",			"canc_on",		"music_",		"s_lla",		"m_sa",
+			"pl_nta",			"hero_",		"vid_o",		"zap_to",		"hor_"
+
+arreglo_letras:
+	.asciz	"o", "i", "e", "o", "o",
+			"i", "e", "a", "a", "a",
+			"a", "u", "a", "o", "a",
+			"u", "e", "o", "o", "a",
+			"u", "e", "e", "o", "a",
+			"a", "e", "a", "e", "i",
+			"o", "i", "a", "i", "e",
+			"a", "e", "e", "a", "a"
 
 	.text
 	.align	2
@@ -119,7 +99,6 @@ turno1:
 	BL getchar
 	LDR r0, =formato_vocal
 	LDR r1, =vocal
-	LDR r1, [r1]
 	bl scanf
 
 	@ compara y salta si r0 es 0 (error)
