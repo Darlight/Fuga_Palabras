@@ -26,6 +26,7 @@ ganador2:		.asciz "El Jugador 2 ha ganado"
 empates:		.asciz "HA SIDO UN EMPATE"
 
 vocal:			.asciz " "
+enter: .asciz "\n"
 
 /*
 interfaz_gra1: 
