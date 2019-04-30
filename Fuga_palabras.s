@@ -44,7 +44,7 @@ interfaz_gra1:
 "   .,                           l@@Zk@@7                                                                                                 :         ",   
 "  .:                              :r;:                                                                                                  :          ",   
 "  :                                                                                                                                    :.          ",   
-" ,,..,.,.,.,.,.,.,.,.,.,.,.,.,.,.......,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,,.			",         
+" ,,..,.,.,.,.,.,.,.,.,.,.,.,.,.,.......,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,.,,.			"      
                                                                                                                                                       
                                                      
 
@@ -85,16 +85,10 @@ arreglo_letras:
 
 main:
 	stmfd	sp!, {lr}
-	contador_palabras	.req	R5
-	contador1			.req	R6
-	contador2			.req	R7
-	random				.req	R8
-	letra				.req	R9
-	palabra				.req	R10
-
-	MOV contador_palabras, #10
-	MOV contador1, #0
-	MOV contador2, #0
+	
+	MOV R5, #10
+	MOV R6, #0
+	MOV R7, #0
 /*Codigo de martha ligia*/
 	ldr r0,=enter
 	bl puts
@@ -122,7 +116,7 @@ palabra2:
 	bl random_real2	
 
 turno1:
-	MOV random, R0							@Mueve a la variable random el valor generado aleatorio en R0
+	MOV R8, R0							@Mueve a la variable random el valor generado aleatorio en R0
 	MOV R8, R0 
 	MOV R4, #7
 	MUL R8, R4
@@ -132,7 +126,7 @@ turno1:
 	
 	bl printf								@Imprime la palabra
 
-	SUB contador_palabras, contador_palabras, #1		@@Resta 1 al contador de palabras	
+	SUB R5, R5, #1		@@Resta 1 al contador de palabras	
 	LDR R0, =ingresar_vocal								@Imprime el mensaje para ingresar vocal
 	BL puts
 
@@ -148,26 +142,26 @@ turno1:
 	@COMPARAR LETRAS
 	LDR R1, =vocal			@Coloca en R1 la direccion de la vocal
 	LDR R1, [R1]			@Coloca en R1 el valor de la direccion de la vocal 
-	CMP R1, letra			@Compara la vocal ingresada con la letra faltante de la Palabra
+	CMP R1, R9			@Compara la vocal ingresada con la letra faltante de la Palabra
 	BEQ correcto1			@Si son iguales se hace un salto a correcto1
 	BNE incorrecto1			@Si no son iguales se hace un salto a incorrecto1
 
 correcto1:
-	add contador1, contador1, #5		@Suma 5 puntos al contador de puntos del jugador 1
+	add R6, R6, #5		@Suma 5 puntos al contador de puntos del jugador 1
 	LDR R0, =formato_bien1				@Coloca en R0 el mensaje de ingreso correcto
-	MOV R1, contador1					@Coloca en R1 el contador del jugador 1
+	MOV R1, R6					@Coloca en R1 el contador del jugador 1
 	bl printf							@Imprime en pantalla el mensaje de correcto
 	bl palabra2							@Hace un salto al turno del jugador 2
 
 incorrecto1:
-	sub contador1, contador1, #2		@Resta 2 puntos al contador de puntos del jugador 1
+	sub R6, R6, #2		@Resta 2 puntos al contador de puntos del jugador 1
 	LDR R0, =formato_mal1				@Coloca en R0 el mensaje de ingreso incorrecto
-	MOV R1, contador1					@Coloca en R1 el contador del jugador 1
+	MOV R1, R6					@Coloca en R1 el contador del jugador 1
 	bl printf							@Imprime en pantalla el mensaje de incorrecto
 	bl palabra2							@Hace un salto al turno del jugador 2
 
 turno2:
-	MOV random, R0							@Mueve a la variable random el valor generado aleatorio en R0
+	MOV R8, R0							@Mueve a la variable random el valor generado aleatorio en R0
 	MOV R8, R0 
 	MOV R4, #7
 	MUL R8, R4
@@ -177,7 +171,7 @@ turno2:
 	
 	bl printf								@Imprime la palabra
 
-	SUB contador_palabras, contador_palabras, #1		@@Resta 1 al contador de palabras	
+	SUB R5, R5, #1		@@Resta 1 al contador de palabras	
 	LDR R0, =ingresar_vocal								@Imprime el mensaje para ingresar vocal
 	BL puts
 
@@ -193,33 +187,33 @@ turno2:
 	@COMPARAR LETRAS
 	LDR R1, =vocal			@Coloca en R1 la direccion de la vocal
 	LDR R1, [R1]			@Coloca en R1 el valor de la direccion de la vocal 
-	CMP R1, letra			@Compara la vocal ingresada con la letra faltante de la Palabra
+	CMP R1, R9			@Compara la vocal ingresada con la letra faltante de la Palabra
 	BEQ correcto2			@Si son iguales se hace un salto a correcto2
 	BNE incorrecto2			@Si no son iguales se hace un salto a incorrecto2
 
 correcto2:
 	@Suma 5 puntos al contador de puntos del jugador 2
-	add contador2, contador2, #5
+	add R7, R7, #5
 	LDR R0, =formato_bien2
-	MOV R1, contador2
+	MOV R1, R7
 	bl printf
 	bl comparar
 
 incorrecto2:
 	@Resta 2 puntos al contador de puntos del jugador 2
-	sub contador2, contador2, #2
+	sub R7, R7, #2
 	LDR R0, =formato_mal2
-	MOV R1, contador2
+	MOV R1, R7
 	bl printf
 	bl comparar
 
 comparar:
-	CMP contador_palabras, #0
+	CMP R5, #0
 	BEQ fin
 	BNE turno1
 
 ganador:
-	CMP contador1, contador2
+	CMP R6, R7
 	BGT gana1
 	BLT gana2
 	BEQ empate
@@ -271,13 +265,6 @@ random_real2:
 	blt turno2
 	
 fin:
-	.unreq	contador_palabras
-	.unreq	contador1
-	.unreq	contador2
-	.unreq	random
-	.unreq	letra
-	.unreq	palabra
-
 	mov r0, #0
 	mov r3, #0
 	ldmfd sp!, {lr}
