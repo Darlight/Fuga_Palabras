@@ -50,23 +50,23 @@ interfaz_gra1:
                                                      
 
 arreglo_palabras:	
-	.asciz	"h_la",				"ad_os",		"univ_rsidad",	"pat_",			"c_mputadora",	
-			"organizac_on",		"ten_dor",		"aliment_r",	"p_labra",		"manzan_",	
-			"Guatem_la",		"g_itarra",		"vari_ble",		"pr_gramacion",	"program_dor",	
-			"fr_ta",			"v_rdura",		"amig_",		"florer_",		"pant_lla",
-			"p_nto",			"flotant_",		"t_cla",		"rat_n",		"c_ble"
-			"puert_",			"v_ntana",		"c_sa",			"t_cho",		"m_sil",
-			"c_rrer",			"canc_on",		"music_",		"s_lla",		"m_sa",
-			"pl_nta",			"hero_",		"vid_o",		"zap_to",		"hor_"
+	.asciz	"n_gro",		"_lote",		"ci_lo",	"pat_s",	"r_ton",	
+			"m_nta",		"b_llo",		"vas_s",	"plat_",	"f_tos",	
+			"rad_o",		"v_nus",		"vig_r",	"h_jas",	"arb_l",	
+			"fr_ta",		"s_lla",		"m_ngo",	"r_loj",	"ment_",
+			"agu_s",		"fr_sa",		"p_nes",	"hi_lo",	"fu_go"
+			"pl_za",		"pl_zo",		"p_bre",	"r_yos",	"l_nte",
+			"pl_no",		"nub_s",		"mis_l",	"g_tas",	"luc_s",
+			"pi_no",		"cabl_",		"vid_o",	"l_piz",	"c_lor"
 
 arreglo_letras:
-	.asciz	"o", "i", "e", "o", "o",
-			"i", "e", "a", "a", "a",
-			"a", "u", "a", "o", "a",
-			"u", "e", "o", "o", "a",
-			"u", "e", "e", "o", "a",
-			"a", "e", "a", "e", "i",
-			"o", "i", "a", "i", "e",
+	.asciz	"e", "e", "e", "o", "a",
+			"a", "e", "o", "o", "o",
+			"i", "e", "o", "o", "o",
+			"u", "i", "a", "e", "a",
+			"a", "e", "a", "e", "e",
+			"a", "a", "o", "a", "e",
+			"a", "e", "i", "o", "e",
 			"a", "e", "e", "a", "a"
 
 	.text
@@ -79,12 +79,19 @@ arreglo_letras:
 	R5	Contador de palabras por juego
 	R6  Contador de puntos del jugador 1
 	R7	Contador de puntos del jugador 2
+	R8	Numero random
+	R9	letra
+	R10 palabra random
 	*/
+
 main:
 	stmfd	sp!, {lr}
 	contador_palabras	.req	R5
 	contador1			.req	R6
 	contador2			.req	R7
+	random				.req	R8
+	letra				.req	R9
+	palabra				.req	R10
 
 	MOV contador_palabras, #10
 	MOV contador1, #0
@@ -106,68 +113,96 @@ fila:
 
 	mov r7,#1
 
+	bl palabra1
+
+
+palabra1:
+	bl random_real1	
+
+palabra2:
+	bl random_real2	
+
 turno1:
-	SUB contador_palabras, contador_palabras, #1
-	LDR R0, =ingresar_vocal
+	MOV random, R0							@Mueve a la variable random el valor generado aleatorio en R0
+	MOV R8, R0 
+	MOV R4, #7
+	MUL R8, R4
+
+	LDR R0, =formato_palabra				@Coloca en R0 el formato para imprimir la palabra 
+	ADD R0, R0, R8
+	
+	bl printf								@Imprime la palabra
+
+	SUB contador_palabras, contador_palabras, #1		@@Resta 1 al contador de palabras	
+	LDR R0, =ingresar_vocal								@Imprime el mensaje para ingresar vocal
 	BL puts
 
-	BL getchar
-	LDR r0, =formato_vocal
-	LDR r1, =vocal
-	bl scanf
+	BL getchar						@Borra todo lo que se encuentra en el buffer del teclado
+	LDR r0, =formato_vocal			@Coloca en R0 el formato del dato a ingresar
+	LDR r1, =vocal					@Coloca en R1 la direccion donde se guardara lo ingresado
+	bl scanf						@Lee la vocal ingresada
 
-	@ compara y salta si r0 es 0 (error)
+	@COMPARAR ERROR
 	cmp r0,#0
 	beq Num_Mal1
 
-	@Compara la letra ingresada con la letra faltante
-	LDR R1, =vocal
-	LDR R1, [R1]
-	CMP R1, letra
-	BEQ correcto1
+	@COMPARAR LETRAS
+	LDR R1, =vocal			@Coloca en R1 la direccion de la vocal
+	LDR R1, [R1]			@Coloca en R1 el valor de la direccion de la vocal 
+	CMP R1, letra			@Compara la vocal ingresada con la letra faltante de la Palabra
+	BEQ correcto1			@Si son iguales se hace un salto a correcto1
+	BNE incorrecto1			@Si no son iguales se hace un salto a incorrecto1
 
 correcto1:
-	@Suma 5 puntos al contador de puntos del jugador 1
-	add contador1, contador1, #5
-	LDR R0, =formato_bien1
-	LDR R1, contador1
-	bl printf
-	bl turno2
+	add contador1, contador1, #5		@Suma 5 puntos al contador de puntos del jugador 1
+	LDR R0, =formato_bien1				@Coloca en R0 el mensaje de ingreso correcto
+	MOV R1, contador1					@Coloca en R1 el contador del jugador 1
+	bl printf							@Imprime en pantalla el mensaje de correcto
+	bl palabra2							@Hace un salto al turno del jugador 2
 
 incorrecto1:
-	@Resta 2 puntos al contador de puntos del jugador 1
-	sub contador1, contador1, #2
-	LDR R0, =formato_mal1
-	LDR R1, contador1
-	bl printf
-	bl turno2
+	sub contador1, contador1, #2		@Resta 2 puntos al contador de puntos del jugador 1
+	LDR R0, =formato_mal1				@Coloca en R0 el mensaje de ingreso incorrecto
+	MOV R1, contador1					@Coloca en R1 el contador del jugador 1
+	bl printf							@Imprime en pantalla el mensaje de incorrecto
+	bl palabra2							@Hace un salto al turno del jugador 2
 
 turno2:
-	SUB contador_palabras, contador_palabras, #1
-	LDR R0, =ingresar_vocal
+	MOV random, R0							@Mueve a la variable random el valor generado aleatorio en R0
+	MOV R8, R0 
+	MOV R4, #7
+	MUL R8, R4
+
+	LDR R0, =formato_palabra				@Coloca en R0 el formato para imprimir la palabra 
+	ADD R0, R0, R8
+	
+	bl printf								@Imprime la palabra
+
+	SUB contador_palabras, contador_palabras, #1		@@Resta 1 al contador de palabras	
+	LDR R0, =ingresar_vocal								@Imprime el mensaje para ingresar vocal
 	BL puts
 
-	BL getchar
-	LDR r0, =formato_vocal
-	LDR r1, =vocal
-	LDR r1, [r1]
-	bl scanf
+	BL getchar						@Borra todo lo que se encuentra en el buffer del teclado
+	LDR r0, =formato_vocal			@Coloca en R0 el formato del dato a ingresar
+	LDR r1, =vocal					@Coloca en R1 la direccion donde se guardara lo ingresado
+	bl scanf						@Lee la vocal ingresada
 
-	@ compara y salta si r0 es 0 (error)
+	@COMPARAR ERROR
 	cmp r0,#0
 	beq Num_Mal2
 
-	@Compara la letra ingresada con la letra faltante
-	LDR R1, =vocal
-	LDR R1, [R1]
-	CMP R1, letra
-	BEQ correcto2
+	@COMPARAR LETRAS
+	LDR R1, =vocal			@Coloca en R1 la direccion de la vocal
+	LDR R1, [R1]			@Coloca en R1 el valor de la direccion de la vocal 
+	CMP R1, letra			@Compara la vocal ingresada con la letra faltante de la Palabra
+	BEQ correcto2			@Si son iguales se hace un salto a correcto2
+	BNE incorrecto2			@Si no son iguales se hace un salto a incorrecto2
 
 correcto2:
 	@Suma 5 puntos al contador de puntos del jugador 2
 	add contador2, contador2, #5
 	LDR R0, =formato_bien2
-	LDR R1, contador2
+	MOV R1, contador2
 	bl printf
 	bl comparar
 
@@ -175,7 +210,7 @@ incorrecto2:
 	@Resta 2 puntos al contador de puntos del jugador 2
 	sub contador2, contador2, #2
 	LDR R0, =formato_mal2
-	LDR R1, contador2
+	MOV R1, contador2
 	bl printf
 	bl comparar
 
@@ -220,22 +255,33 @@ Num_Mal2:
 	bl getchar @para que borre la informacion del buffer de teclado
 	bl turno2
 
+random_real1:
+	bl aleatorios
+	cmp r0, #0
+	blt random_real1
+	cmpge r0, #40
+	bgt random_real1
+	blt turno1
+
+random_real2:
+	bl aleatorios
+	cmp r0, #0
+	blt random_real2
+	cmpge r0, #40
+	bgt random_real2
+	blt turno2
+	
 fin:
 	.unreq	contador_palabras
 	.unreq	contador1
 	.unreq	contador2
+	.unreq	random
+	.unreq	letra
+	.unreq	palabra
 
 	mov r0, #0
 	mov r3, #0
 	ldmfd sp!, {lr}
 	bx lr
-random_real:
-	push {lr}
-	bl aleatorios
-	cmp r0, #0
-	blt random_real
-	cmpge r0, #20
-	bgt random_real
-	pop {pc}
-	
+
 
