@@ -88,6 +88,22 @@ main:
 	MOV contador_palabras, #10
 	MOV contador1, #0
 	MOV contador2, #0
+/*Codigo de martha ligia*/
+	ldr r0,=enter
+	bl puts
+
+	ldr r0,=interfaz_gra1
+	mov r4,r0
+	mov r5,#20
+fila:	
+/*Codigo de martha ligia*/
+	bl puts
+	add r4,#148
+	mov r0,r4
+	subs r5,r5,#1
+	bne fila
+
+	mov r7,#1
 
 turno1:
 	SUB contador_palabras, contador_palabras, #1
